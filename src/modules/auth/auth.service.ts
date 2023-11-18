@@ -18,8 +18,10 @@ export class AuthService {
       if(!user){
         throw new NotFoundException('User is not found!')
       }
-      if(loginAuthDto.password != user.password){
-        throw new BadRequestException('Password is invalid!')
+
+      const isPasswordValid = await bcrypt.compare(loginAuthDto.password, user.password)
+      if (!isPasswordValid) {
+        throw new BadRequestException('Password is invalid!');
       }
 
       const payload = { id: user.id }
